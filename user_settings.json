@@ -1,0 +1,29 @@
+{
+	"replacements":{
+		"[[crtl]]":"\\key{}",
+		"[[alt]]": "\\key{}",
+		"[[tab]]": "\\key{E}",
+		"[[":"\\key{",
+		"]]":"}"
+	},
+	"variables":{
+		"mainfont": "Linux Libertine O",
+		"sansfont": "Linux Biolinum",
+		"lang":"en-UK"
+	},
+	"extensions":["yaml_metadata_block"],
+	"options":{
+		"numbered_headings":"True",
+		"toc":"True"
+	},
+	"loglevel":"DEBUG",
+		"files": [
+		{
+			"in_file":"README.md",
+			"out_file":"out.pdf",
+			"template":"templates/shortcuts.tex"
+		}
+
+	]
+
+}
