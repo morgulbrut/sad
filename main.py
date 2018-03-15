@@ -46,10 +46,22 @@ def read_json(json_file):
     try:
         json_data = open(json_file).read()
     except FileNotFoundError:
-        logging.critical('Please provide a settings.json file')
+        logging.warning('{} not found'.format(json_file))
+        init_config()
+        logging.warning('Please rerun to compile your document(s)')
         quit()
     return json.loads(json_data)
 
+def init_config():
+    logging.info('Setting up new settings.json')
+    conf={'replacements':{},'variables':{'lang':'de-CH','papersize':'A4','fontsize': '10pt','documentclass': 'scrartcl','mainfont': 'Linux Libertine O','sansfont': 'Linux Biolinum',},'extensions':['yaml_metadata_block'],'options':{'numbered_headings':'True','toc':'False','lof':'False','lot':'False','verbose':'False',},'loglevel':'INFO','files': [],}
+    for file in os.listdir():
+        (name,ext)=os.path.splitext(file)
+        if ext == '.md':
+            conf['files'].append({'in_file':file,'out_file':name+'.pdf','template':'default.latex'})
+    with open('settings.json','w') as f:
+        json.dump(conf,f)
+    return conf
 
 def options(settings):
     ret = []
@@ -129,10 +141,6 @@ def generate_output(in_file, out_file, settings, template=''):
 
 def main():
     settings = (read_json('settings.json'))
-    try:
-        deep_update(settings, read_json(os.getcwd() + '/user_settings.json'))
-    except Exception as e:
-        logging.warning(e)
     logging.setLevel(settings['loglevel'])
     files = settings['files']
     for f in files:
