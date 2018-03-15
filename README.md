@@ -6,17 +6,19 @@ writing a Markdown file and some json?
 Pandoc makes at least the first part. So hacking together some Python to
 take part of the second was just a logical consequence.
 
+# Dependencies
+
+  - Pandoc
+  - Python 3.
+
 # How to set Up
 
 ## settings.json
 
-There is a global settings.json, which goes into the same directory as
-the main.py.
-
-## user\_settings.json
-
-There can be a user\_settings.json in the working directory, which
-overwrites the global settings.
+If call sad for the first time from the directory, where the markdown
+file you want to convert is, it will generate a settings.json, you
+perhaps want to review it, since for example I really like Linux
+Biolinum and Linux Libertine and therefore use it as my default font.
 
 ## settings.json example:
 
@@ -155,7 +157,3 @@ Sets the log level, possible values are
 ### files
 
 Sets input file, outputfile and template(optional).
-
-\[\[crtl\]\]+\[\[alt\]\]
-
-\[\[T\]\]\[\[I\]\]\[\[L\]\]\[\[L\]\]\[\[0\]\]
