@@ -1,21 +1,33 @@
 {
-	"replacements":{
-	},
-	"variables":{
-		"lang":"de-CH",
-		"papersize":"A4",
-		"fontsize": "10pt",
-		"documentclass": "scrartcl"
-	},
-	"extensions":["yaml_metadata_block"],
-	"options":{
-		"numbered_headings":"True",
-		"toc":"False",
-		"lof":"False",
-		"lot":"False",
-		"verbose":"False"
-	},
-	"loglevel":"INFO",
-		"files": [
-	]
+  "replacements": {},
+  "variables": {
+    "lang": "de-CH",
+    "papersize": "A4",
+    "fontsize": "10pt",
+    "documentclass": "scrartcl",
+    "mainfont": "Linux Libertine O",
+    "sansfont": "Linux Biolinum"
+  },
+  "extensions": [
+    "yaml_metadata_block"
+  ],
+  "options": {
+    "numbered_headings": "True",
+    "toc": "True",
+    "lof": "False",
+    "lot": "False",
+    "verbose": "False"
+  },
+  "loglevel": "DEBUG",
+  "files": [
+    {
+      "in_file": "documentation.md",
+      "out_file": "documentation.pdf",
+      "template": "default.tex"
+    },
+    {
+      "in_file": "documentation.md",
+      "out_file": "README.md"
+    }
+  ]
 }
