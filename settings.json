@@ -1,5 +1,11 @@
 {
-  "replacements": {},
+  "replacements": {
+  	"[[crtl]]":"\\key{}", 
+    "[[alt]]": "\\key{}", 
+    "[[tab]]": "\\key{E}", 
+    "[[":"\\key{", 
+    "]]":"}"
+  },
   "variables": {
     "lang": "de-CH",
     "papersize": "A4",
