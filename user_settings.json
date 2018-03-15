@@ -19,9 +19,13 @@
 	"loglevel":"DEBUG",
 		"files": [
 		{
-			"in_file":"README.md",
-			"out_file":"out.pdf",
+			"in_file":"documentation.md",
+			"out_file":"docu.pdf",
 			"template":"templates/shortcuts.tex"
+		},
+		{
+			"in_file":"documentation.md",
+			"out_file":"README.md"
 		}
 
 	]
