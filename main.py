@@ -97,23 +97,32 @@ def deep_update(source, overrides):
     return source
 
 
-def generate_pfd(in_file, out_file, settings, template='template/default.tex'):
-    temp_file = replace_keys(in_file, settings['replacements'])
-    logging.info('Generating PDF...')
-    cmd = ['pandoc --pdf-engine=xelatex {}'.format(temp_file)]
+def generate_output(in_file, out_file, settings, template=''):
+    path,ext = os.path.splitext(out_file)
+    if ext == '.pdf':
+        temp_file = replace_keys(in_file, settings['replacements'])
+    if ext == '.md':
+        with open('tmpfile', 'w') as t:
+            temp_file = escape_latex(in_file)
+    logging.info('Generating output...')
+    cmd = ['pandoc {}'.format(temp_file)]
     cmd.append('-o {}'.format(out_file))
-    cmd.append('--template={}'.format(template))
-    in_format = ['--from markdown']
-    for extension in settings['extensions']:
-        logging.debug('Adding extension: {}'.format(extension))
-        in_format.append('+{}'.format(extension))
-    cmd.append(''.join(in_format))
-    cmd.append(options(settings))
-    for variable in settings['variables']:
-        logging.debug('Adding variable {}={}'.format(
-            variable, settings['variables'][variable]))
-        cmd.append('--variable {}="{}"'.format(variable,
-                                               settings['variables'][variable]))
+
+    if ext == '.pdf':
+        cmd.append('--pdf-engine=xelatex')
+        cmd.append('--template={}'.format(template))
+        in_format = ['--from markdown']
+        for extension in settings['extensions']:
+            logging.debug('Adding extension: {}'.format(extension))
+            in_format.append('+{}'.format(extension))
+        cmd.append(''.join(in_format))
+        cmd.append(options(settings))
+        for variable in settings['variables']:
+            logging.debug('Adding variable {}={}'.format(
+                variable, settings['variables'][variable]))
+            cmd.append('--variable {}="{}"'.format(variable,settings['variables'][variable]))
+    if ext == '.md':
+        cmd.append('-t gfm')
     execute_exernal(' '.join(cmd))
     os.remove(temp_file)
 
@@ -128,10 +137,10 @@ def main():
     files = settings['files']
     for f in files:
         try:
-            generate_pfd(f['in_file'], f['out_file'], settings, f['template'])
+            generate_output(f['in_file'], f['out_file'], settings, f['template'])
         except KeyError:
             try:
-                generate_pfd(f['in_file'], f['out_file'])
+                generate_output(f['in_file'], f['out_file'],settings)
             except Exception as e:
                 logging.critical(e)
 
