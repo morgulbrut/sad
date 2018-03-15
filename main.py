@@ -5,6 +5,7 @@ import subprocess
 import os
 import colorlog
 import collections
+import re
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter(
@@ -21,6 +22,15 @@ def replace_keys(md_file, lut):
         for k in lut.keys():
             logging.debug('Replacing: {} => {}'.format(k, lut[k]))
             f = f.replace(k, lut[k])
+    with open('tmpfile', 'w') as t:
+        t.write(f)
+    return t.name
+
+def escape_latex(md_file):
+    logging.info('Escaping LaTeX')
+    with open(md_file) as f:
+        f = f.read()
+        f = re.sub(r'(\\[\w\{\}\[\]]*)',r'`\1`',f)
     with open('tmpfile', 'w') as t:
         t.write(f)
     return t.name
