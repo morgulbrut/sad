@@ -6,6 +6,8 @@ import os
 import colorlog
 import collections
 import re
+import argparse
+
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter(
@@ -140,9 +142,21 @@ def generate_output(in_file, out_file, settings, template=''):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Run it once to generate a initial settings.json file. Review it afterwards if it suits your use. By default PDFs for every md found in the working directory will be generated")
+    parser.add_argument("-i","--init", help="Writes a new default settings.json. Overwrites any present one",action="store_true")
+    parser.add_argument(
+        "-b", "--beamer", help="Generates beamer presentation.",action="store_true")
+    args = parser.parse_args()
     settings = (read_json('settings.json'))
     logging.setLevel(settings['loglevel'])
     files = settings['files']
+
+    if args.init:
+        init_config()
+        quit()
+
+
+
     for f in files:
         try:
             generate_output(f['in_file'], f['out_file'], settings, f['template'])
