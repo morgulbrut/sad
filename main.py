@@ -67,7 +67,7 @@ def read_json(json_file):
 
 def init_config():
     logging.info('Setting up new settings.json')
-    conf={'replacements':{},'variables':{'lang':'de-CH','papersize':'A4','fontsize': '10pt','documentclass': 'scrartcl','mainfont': 'Linux Libertine O','sansfont': 'Linux Biolinum',},'extensions':['yaml_metadata_block'],'options':{'numbered_headings':'True','toc':'False','lof':'False','lot':'False','verbose':'False',},'loglevel':'INFO','files': [],}
+    conf={'replacements':{},'variables':['lang=de-CH','papersize=A4','fontsize=10pt','documentclass=scrartcl','mainfont=Linux Libertine O','mainfontoptions=Numbers=OldStyle','mainfontoptions=Ligatures=Discretionary','sansfont=Linux Biolinum','sansfontoptions=Numbers=OldStyle'],'extensions':['yaml_metadata_block'],'options':{'numbered_headings':'True','toc':'True','lof':'False','lot':'False','verbose':'False',},'loglevel':'INFO','files': [],}
     for file in os.listdir():
         (name,ext)=os.path.splitext(file)
         if ext == '.md':
