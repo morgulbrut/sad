@@ -1,19 +1,16 @@
 {
-  "replacements": {
-  	"[[crtl]]":"\\key{}", 
-    "[[alt]]": "\\key{}", 
-    "[[tab]]": "\\key{E}", 
-    "[[":"\\key{", 
-    "]]":"}"
-  },
-  "variables": {
-    "lang": "de-CH",
-    "papersize": "A4",
-    "fontsize": "10pt",
-    "documentclass": "scrartcl",
-    "mainfont": "Linux Libertine O",
-    "sansfont": "Linux Biolinum"
-  },
+  "replacements": {},
+  "variables": [
+    "lang=de-CH",
+    "papersize=A4",
+    "fontsize=10pt",
+    "documentclass=scrbook",
+    "mainfont=Linux Libertine O",
+    "mainfontoptions=Numbers=OldStyle",
+   	"mainfontoptions=Ligatures=Discretionary",
+    "sansfont=Linux Biolinum",
+    "sansfontoptions=Numbers=OldStyle"
+  ],
   "extensions": [
     "yaml_metadata_block"
   ],
@@ -24,16 +21,12 @@
     "lot": "False",
     "verbose": "False"
   },
-  "loglevel": "DEBUG",
+  "loglevel": "INFO",
   "files": [
     {
       "in_file": "documentation.md",
       "out_file": "documentation.pdf",
-      "template": "default.tex"
-    },
-    {
-      "in_file": "documentation.md",
-      "out_file": "README.md"
+      "template": "templates/shortcuts.tex"
     }
   ]
 }
