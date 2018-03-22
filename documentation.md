@@ -11,10 +11,16 @@ Wouldn't it cool to use the power of \XeLaTeX{} with the ease of writing a Markd
 
 Pandoc makes at least the first part. So hacking together some Python to take part of the second was just a logical consequence.
 
+## Why XeLaTeX?
+
+Thats why
+:	ffi, tz, tt  Qu, Th, 1234567890
+
 # Dependencies
 
   * Pandoc
   * Python 3.
+  * \XeLaTeX{}
 
 # How to set Up
 	
