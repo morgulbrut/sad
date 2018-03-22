@@ -122,33 +122,39 @@ def deep_update(source, overrides):
     return source
 
 
+def generate_pdf(in_file,out_file,settings,template='',beamer=False):
+    cmd = ['pandoc {}'.format(in_file)]
+    cmd.append('-o {}'.format(out_file))
+    if beamer:
+        cmd.append('-t beamer')
+    else:
+        cmd.append('--template={}'.format(template))
+        cmd.append('--pdf-engine=xelatex')
+        for variable in settings['variables']:
+            logging.debug('Adding variable {}'.format(variable))
+            cmd.append('--variable "{}"'.format(variable))
+    in_format = ['--from markdown']
+    for extension in settings['extensions']:
+        logging.debug('Adding extension: {}'.format(extension))
+        in_format.append('+{}'.format(extension))
+    cmd.append(''.join(in_format))
+    cmd.append(options(settings))
+    execute_exernal(' '.join(cmd))
+
+
 def generate_output(in_file, out_file, settings, template=''):
     path,ext = os.path.splitext(out_file)
+    logging.info('Generating output...')
     if ext == '.pdf':
-        temp_file = replace_keys(in_file, settings['replacements'])
+        md = include(in_file)
+        temp_file = replace_lut(md, settings['replacements'])
+        generate_pdf(temp_file,out_file,settings,template)
     if ext == '.md':
         with open('tmpfile', 'w') as t:
             temp_file = escape_latex(in_file)
-    logging.info('Generating output...')
-    cmd = ['pandoc {}'.format(temp_file)]
-    cmd.append('-o {}'.format(out_file))
-
-    if ext == '.pdf':
-        cmd.append('--pdf-engine=xelatex')
-        cmd.append('--template={}'.format(template))
-        in_format = ['--from markdown']
-        for extension in settings['extensions']:
-            logging.debug('Adding extension: {}'.format(extension))
-            in_format.append('+{}'.format(extension))
-        cmd.append(''.join(in_format))
-        cmd.append(options(settings))
-        for variable in settings['variables']:
-            logging.debug('Adding variable {}={}'.format(
-                variable, settings['variables'][variable]))
-            cmd.append('--variable {}="{}"'.format(variable,settings['variables'][variable]))
-    if ext == '.md':
+        cmd = ['pandoc {}'.format(temp_file)]
+        cmd.append('-o {}'.format(out_file))
         cmd.append('-t gfm')
-    execute_exernal(' '.join(cmd))
     os.remove(temp_file)
 
 
@@ -170,7 +176,10 @@ def main():
 
     for f in files:
         try:
-            generate_output(f['in_file'], f['out_file'], settings, f['template'])
+            if args.beamer:
+                generate_pdf(f['in_file'], f['out_file'], settings, f['template'],True)
+            else:
+                generate_output(f['in_file'], f['out_file'], settings, f['template'])
         except KeyError:
             try:
                 generate_output(f['in_file'], f['out_file'],settings)
