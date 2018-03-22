@@ -16,14 +16,22 @@ handler.setFormatter(colorlog.ColoredFormatter(
 logging = colorlog.getLogger('-')
 logging.addHandler(handler)
 
-
 def replace_keys(md_file, lut):
     logging.info('Replacing...')
+def include(md_file):
+    logging.info('Including...')
+    output = []
     with open(md_file) as f:
         f = f.read()
         for k in lut.keys():
             logging.debug('Replacing: {} => {}'.format(k, lut[k]))
             f = f.replace(k, lut[k])
+        for line in f.readlines():
+            if line.strip().lower().startswith('#include'):
+                output.append(include(line.split()[1]))
+            else:
+                output.append(line)
+    return ''.join(output)
     with open('tmpfile', 'w') as t:
         t.write(f)
     return t.name
