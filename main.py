@@ -34,19 +34,12 @@ def replace_lut(md, lut):
     for k in lut.keys():
         logging.debug('Replacing: {} => {}'.format(k, lut[k]))
         md = md.replace(k, lut[k])
-    with open('tmpfile', 'w') as t:
-        t.write(md)
-    return t.name
+    return ''.join(md)
 
 
-def escape_latex(md_file):
+def escape_latex(md):
     logging.info('Escaping LaTeX')
-    with open(md_file) as f:
-        f = f.read()
-        f = re.sub(r'(\\[\w\{\}\[\]]*)',r'`\1`',f)
-    with open('tmpfile', 'w') as t:
-        t.write(f)
-    return t.name
+    return re.sub(r'(\\[\w\{\}\[\]]*)',r'`\1`',md)
 
 
 def execute_exernal(cmd):
@@ -145,17 +138,18 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
 def generate_output(in_file, out_file, settings, template=''):
     path,ext = os.path.splitext(out_file)
     logging.info('Generating output...')
-    if ext == '.pdf':
-        md = include(in_file)
-        temp_file = replace_lut(md, settings['replacements'])
-        generate_pdf(temp_file,out_file,settings,template)
+    md = include(in_file)
+    if ext == '.pdf':     
+        with open('tmpfile', 'w') as f:
+            f.write(replace_lut(md, settings['replacements']))
+        generate_pdf('tmpfile',out_file,settings,template)
     if ext == '.md':
-        with open('tmpfile', 'w') as t:
-            temp_file = escape_latex(in_file)
+        with open('tmpfile', 'w') as f:
+            f.write(escape_latex(md))
         cmd = ['pandoc {}'.format(temp_file)]
         cmd.append('-o {}'.format(out_file))
         cmd.append('-t gfm')
-    os.remove(temp_file)
+    os.remove('tmpfile')
 
 
 def main():
