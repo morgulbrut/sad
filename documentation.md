@@ -30,7 +30,7 @@ If call sad for the first time from the directory, where the markdown file you w
 
 ## settings.json example:
 
-~~~~~~~~~json
+```json
 {
 	"replacements":{
 		"foo":"bar",
@@ -53,7 +53,7 @@ If call sad for the first time from the directory, where the markdown file you w
 		}
 	]
 }
-~~~~~~~~~~~~~~
+```
 
 In detail:
 
@@ -147,7 +147,7 @@ Adds Pandoc extensions to the call to Pandoc, by default *yaml_metadata_block* i
 
 The part of the default *settings.json*, just to show you the possible options
 
-~~~~~json
+```json
 	{
 		"numbered_headings":"True",
 		"toc":"False",
@@ -155,7 +155,7 @@ The part of the default *settings.json*, just to show you the possible options
 		"lot":"False",
 		"verbose":"False"
 	},
-~~~~~~~
+```
 
 
 ### loglevel
