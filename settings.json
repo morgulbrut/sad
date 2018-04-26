@@ -58,7 +58,8 @@
         "sansfontoptions=Numbers=OldStyle",
         "links-as-notes",
         "header-includes=\\newfontfamily{\\keyfont}[Scale=MatchUppercase]{Libertinus Keyboard}",
-      "header-includes=\\newcommand{\\key}[1]{{\\keyfont #1}}"
+        "header-includes=\\newcommand{\\key}[1]{{\\keyfont #1}}",
+        "header-includes=\\usepackage{metalogo}"
     ],
     "extensions": [
         "yaml_metadata_block"
