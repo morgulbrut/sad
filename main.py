@@ -25,6 +25,7 @@ def include(md_file):
                 output.append(include(line.split()[1]))
             else:
                 output.append(line)
+        output.append('\n')
     return ''.join(output)
     
 
