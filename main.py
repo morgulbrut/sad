@@ -120,10 +120,22 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
     cmd = ['pandoc {}'.format(in_file)]
     cmd.append('-o {}'.format(out_file))
     if beamer:
+        settings['options']['toc']='False'
+        settings['options']['lof']='False'
+        settings['options']['lot']='False'
+        settings['options']['verbose']='False'
+        settings['options']['numbered_headings']='False'
         cmd.append('-t beamer')
+        cmd.append('--variable "header-includes=\\usefonttheme{structurebold}"')
+        cmd.append('--variable "header-includes=\\usetheme{Rochester}"')
+        cmd.append('--variable "header-includes=\\colorlet{beamer@blendedblue}{green!40!black}"')
+        for variable in settings['variables']:
+               if ('lang' in variable):
+                logging.debug('Adding variable {}'.format(variable))
+                cmd.append('--variable "{}"'.format(variable))
     else:
         cmd.append('--template={}'.format(template))
-        cmd.append('--pdf-engine=xelatex')
+
         for variable in settings['variables']:
             logging.debug('Adding variable {}'.format(variable))
             cmd.append('--variable "{}"'.format(variable))
@@ -131,6 +143,7 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
     for extension in settings['extensions']:
         logging.debug('Adding extension: {}'.format(extension))
         in_format.append('+{}'.format(extension))
+    cmd.append('--pdf-engine=xelatex')
     cmd.append(''.join(in_format))
     cmd.append(options(settings))
     execute_exernal(' '.join(cmd))
@@ -156,12 +169,17 @@ def generate_output(in_file, out_file, settings, template=''):
 def main():
     parser = argparse.ArgumentParser(description="Run it once to generate a initial settings.json file. Review it afterwards if it suits your use. By default PDFs for every md found in the working directory will be generated")
     parser.add_argument("-i","--init", help="Writes a new default settings.json. Overwrites any present one",action="store_true")
-    parser.add_argument(
-        "-b", "--beamer", help="Generates beamer presentation.",action="store_true")
+    parser.add_argument("-b", "--beamer", help="Generates beamer presentation.",action="store_true")
+    parser.add_argument("-f", "--file", help="Just process a given specific file.")
     args = parser.parse_args()
     settings = (read_json('settings.json'))
     logging.setLevel(settings['loglevel'])
-    files = settings['files']
+    if args.file:
+        infile = args.file
+        (name,ext)=os.path.splitext(infile)
+        files = [{'in_file':args.file, 'out_file':name+'.pdf', 'template': 'default.latex'}]
+    else:
+        files = settings['files']
 
     if args.init:
         init_config()
@@ -172,7 +190,7 @@ def main():
     for f in files:
         try:
             if args.beamer:
-                generate_pdf(f['in_file'], f['out_file'], settings, f['template'],True)
+                generate_pdf(f['in_file'], f['out_file'], settings, f['template'],beamer=True)
             else:
                 generate_output(f['in_file'], f['out_file'], settings, f['template'])
         except KeyError:
