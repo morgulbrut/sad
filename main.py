@@ -130,7 +130,7 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
         cmd.append('-t beamer')
     else:
         cmd.append('--template={}'.format(template))
-        cmd.append('--latex-engine=xelatex')
+        cmd.append('--pdf-engine=xelatex')
         for variable in settings['variables']:
             logging.debug('Adding variable {}'.format(variable))
             cmd.append('--variable "{}"'.format(variable))
