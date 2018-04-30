@@ -74,7 +74,7 @@ def init_config():
         if ext == '.md':
             conf['files'].append({'in_file':file,'out_file':name+'.pdf','template':'default.latex'})
     with open('settings.json','w') as f:
-        json.dump(conf,f)
+        json.dump(conf,f, indent=4)
     return conf
 
 def options(settings):
