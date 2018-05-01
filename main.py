@@ -54,8 +54,7 @@ def read_json(json_file):
         json_data = open(json_file).read()
     except FileNotFoundError:
         logging.warning('{} not found'.format(json_file))
-        init_config()
-        logging.warning('Please rerun to compile your document(s)')
+        logging.warning('Use sad -i to generate a initial settings.json')
         quit()
     return json.loads(json_data)
 
@@ -120,19 +119,11 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
     cmd = ['pandoc {}'.format(in_file)]
     cmd.append('-o {}'.format(out_file))
     if beamer:
-        settings['options']['toc']='False'
-        settings['options']['lof']='False'
-        settings['options']['lot']='False'
-        settings['options']['verbose']='False'
-        settings['options']['numbered_headings']='False'
         cmd.append('-t beamer')
-        cmd.append('--variable "header-includes=\\usefonttheme{structurebold}"')
-        cmd.append('--variable "header-includes=\\usetheme{Rochester}"')
-        cmd.append('--variable "header-includes=\\colorlet{beamer@blendedblue}{green!40!black}"')
+
         for variable in settings['variables']:
-               if ('lang' in variable):
-                logging.debug('Adding variable {}'.format(variable))
-                cmd.append('--variable "{}"'.format(variable))
+            logging.debug('Adding variable {}'.format(variable))
+            cmd.append('--variable "{}"'.format(variable))
     else:
         cmd.append('--template={}'.format(template))
 
@@ -169,10 +160,15 @@ def generate_output(in_file, out_file, settings, template=''):
 def main():
     parser = argparse.ArgumentParser(description="Run it once to generate a initial settings.json file. Review it afterwards if it suits your use. By default PDFs for every md found in the working directory will be generated")
     parser.add_argument("-i","--init", help="Writes a new default settings.json. Overwrites any present one",action="store_true")
-    parser.add_argument("-b", "--beamer", help="Generates beamer presentation.",action="store_true")
+    parser.add_argument("-b", "--beamer", help="Generates beamer presentation. Tries to get settings from slides.json",action="store_true")
     parser.add_argument("-f", "--file", help="Just process a given specific file.")
     args = parser.parse_args()
-    settings = (read_json('settings.json'))
+
+    if args.beamer:
+        settings = (read_json('slides.json'))
+    else:
+        settings = (read_json('settings.json'))
+
     logging.setLevel(settings['loglevel'])
     if args.file:
         infile = args.file
@@ -184,7 +180,6 @@ def main():
     if args.init:
         init_config()
         quit()
-
 
 
     for f in files:
