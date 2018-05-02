@@ -39,6 +39,21 @@ def replace_lut(md, lut):
         t.write(md)
     return t.name
 
+def set_pdf_engine(pandoc_ver):
+    if pandoc_ver = 1
+        return '--latex-engine'
+    else:
+        return '--pdf-engine'
+
+def get_pandoc_vers():
+    rocess = subprocess.Popen(['pandoc','-v'],stdout=subprocess.PIPE)
+    (output,err) = process.communicate()
+    output = str(output,'UTF-8')
+    exit_code=process.wait()
+    if 'pandoc 2' in output.split('\n')[0].lower():
+        return 2
+    else:
+        return 1
 
 def escape_latex(md_file):
     logging.info('Escaping LaTeX')
@@ -141,7 +156,8 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
     for extension in settings['extensions']:
         logging.debug('Adding extension: {}'.format(extension))
         in_format.append('+{}'.format(extension))
-    cmd.append('--pdf-engine=xelatex')
+    pdf_engine=(set_pdf_engine(get_pandoc_vers))
+    cmd.append('{}=xelatex'.format(pdf_engine))
     cmd.append(''.join(in_format))
     cmd.append(options(settings))
     execute_exernal(' '.join(cmd))
