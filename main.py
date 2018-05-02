@@ -38,17 +38,19 @@ def replace_lut(md, lut):
     return ''.join(md)
 
 def set_pdf_engine(pandoc_ver):
-    if pandoc_ver = 1
+    if pandoc_ver == 1:
         return '--latex-engine'
     else:
         return '--pdf-engine'
 
 def get_pandoc_vers():
-    rocess = subprocess.Popen(['pandoc','-v'],stdout=subprocess.PIPE)
+    logging.info('Getting pandoc version...')
+    process = subprocess.Popen(['pandoc','-v'],stdout=subprocess.PIPE)
     (output,err) = process.communicate()
-    output = str(output,'UTF-8')
     exit_code=process.wait()
-    if 'pandoc 2' in output.split('\n')[0].lower():
+    output = str(output,'UTF-8').split('\n')[0].lower()
+    logging.info('Found: {}'.format(output))
+    if 'pandoc 2' in output:
         return 2
     else:
         return 1
@@ -149,7 +151,7 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
     for extension in settings['extensions']:
         logging.debug('Adding extension: {}'.format(extension))
         in_format.append('+{}'.format(extension))
-    pdf_engine=(set_pdf_engine(get_pandoc_vers))
+    pdf_engine=(set_pdf_engine(get_pandoc_vers()))
     cmd.append('{}=xelatex'.format(pdf_engine))
     cmd.append(''.join(in_format))
     cmd.append(options(settings))
