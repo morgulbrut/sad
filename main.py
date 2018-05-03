@@ -72,7 +72,12 @@ def read_json(json_file):
         logging.warning('{} not found'.format(json_file))
         logging.warning('Use sad -i to generate a initial settings.json')
         quit()
-    return json.loads(json_data)
+    try:
+        return json.loads(json_data)
+    except json.decoder.JSONDecodeError:
+        logging.critical('{} not formated proprely'.format(json_file))
+        quit()
+    
 
 def init_config():
     logging.info('Setting up new settings.json')
