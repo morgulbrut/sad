@@ -44,10 +44,14 @@ def set_pdf_engine(pandoc_ver):
 
 def get_pandoc_vers():
     logging.info('Getting pandoc version...')
-    process = subprocess.Popen(['pandoc','-v'],stdout=subprocess.PIPE)
-    (output,err) = process.communicate()
-    exit_code=process.wait()
-    output = str(output,'UTF-8').split('\n')[0].lower()
+    try:
+        process = subprocess.Popen(['pandoc','-v'],stdout=subprocess.PIPE)
+        (output,err) = process.communicate()
+        exit_code=process.wait()
+        output = str(output,'UTF-8').split('\n')[0].lower()
+    execpt FileNotFoundError:
+        logging.critical('Pandoc not found, please install pandoc')
+        quit()
     logging.info('Found: {}'.format(output))
     if 'pandoc 2' in output:
         return 2
