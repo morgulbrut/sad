@@ -20,11 +20,14 @@ def include(md_file):
     logging.info('Including...')
     output = []
     with open(md_file) as f:
-        for line in f.readlines():
-            if line.strip().lower().startswith('#include'):
-                output.append(include(line.split()[1]))
-            else:
-                output.append(line)
+        try:
+            for line in f.readlines():
+                if line.strip().lower().startswith('#include'):
+                    output.append(include(line.split()[1]))
+                else:
+                    output.append(line)
+        except UnicodeDecodeError:
+            pass
         output.append('\n')
     return ''.join(output)
     
