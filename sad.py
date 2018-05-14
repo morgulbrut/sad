@@ -49,7 +49,7 @@ def get_pandoc_vers():
         (output,err) = process.communicate()
         exit_code=process.wait()
         output = str(output,'UTF-8').split('\n')[0].lower()
-    execpt FileNotFoundError:
+    except FileNotFoundError:
         logging.critical('Pandoc not found, please install pandoc')
         quit()
     logging.info('Found: {}'.format(output))
