@@ -184,7 +184,8 @@ def generate_output(in_file, out_file, settings, template=''):
     if ext == '.docx':
         with open('tmpfile', 'w') as f:
             f.write(replace_lut(md, settings['replacements']))
-        cmd = ['pandoc -s --reference-doc {} -o {} {}'.format(template,'tempfile',in_file)]
+            f.write(escape_latex(md))
+        cmd = ['pandoc -s --reference-doc {} -o {} {}'.format(template,'tmpfile',in_file)]
         execute_exernal(' '.join(cmd))
     os.remove('tmpfile')   
 
