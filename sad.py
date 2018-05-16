@@ -172,6 +172,7 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
 def generate_output(in_file, out_file, settings, template=''):
     path,ext = os.path.splitext(out_file)
     logging.info('Generating output...')
+    logging.debug('{} => {}'.format(in_file,out_file))
     md = include(in_file)
     if ext == '.pdf':     
         with open('tmpfile', 'w') as f:
