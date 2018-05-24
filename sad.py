@@ -33,7 +33,7 @@ def include(md_file):
     
 
 def replace_lut(md, lut):
-    logging.info('Replacing...')
+    logging.info('Replacing... ("replacements" in json)')
     for k in lut.keys():
         logging.debug('Replacing: {} => {}'.format(k, lut[k]))
         md = md.replace(k, lut[k])
