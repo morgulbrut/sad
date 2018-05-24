@@ -28,7 +28,7 @@ def include(md_file):
                     output.append(line)
         except UnicodeDecodeError:
             pass
-        output.append('\n')
+        output.append('\n\n')
     return ''.join(output)
     
 
