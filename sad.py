@@ -16,6 +16,7 @@ handler.setFormatter(colorlog.ColoredFormatter(
 logging = colorlog.getLogger('-')
 logging.addHandler(handler)
 
+
 def include(md_file):
     output = []
     with open(md_file) as f:
@@ -30,7 +31,7 @@ def include(md_file):
             pass
         output.append('\n\n')
     return ''.join(output)
-    
+
 
 def replace_lut(md, lut):
     logging.info('Replacing... ("replacements" in json)')
@@ -39,19 +40,21 @@ def replace_lut(md, lut):
         md = md.replace(k, lut[k])
     return ''.join(md)
 
+
 def set_pdf_engine(pandoc_ver):
     if pandoc_ver == 1:
         return '--latex-engine'
     else:
         return '--pdf-engine'
 
+
 def get_pandoc_vers():
     logging.info('Getting pandoc version...')
     try:
-        process = subprocess.Popen(['pandoc','-v'],stdout=subprocess.PIPE)
-        (output,err) = process.communicate()
-        exit_code=process.wait()
-        output = str(output,'UTF-8').split('\n')[0].lower()
+        process = subprocess.Popen(['pandoc', '-v'], stdout=subprocess.PIPE)
+        (output, err) = process.communicate()
+        exit_code = process.wait()
+        output = str(output, 'UTF-8').split('\n')[0].lower()
     except FileNotFoundError:
         logging.critical('Pandoc not found, please install pandoc')
         quit()
@@ -61,9 +64,10 @@ def get_pandoc_vers():
     else:
         return 1
 
+
 def escape_latex(md):
     logging.info('Escaping LaTeX')
-    return re.sub(r'(\\[\w\{\}\[\]]*)',r'`\1`',md)
+    return re.sub(r'(\\[\w\{\}\[\]]*)', r'`\1`', md)
 
 
 def execute_exernal(cmd):
@@ -84,18 +88,21 @@ def read_json(json_file):
     except json.decoder.JSONDecodeError:
         logging.critical('{} not formated proprely'.format(json_file))
         quit()
-    
+
 
 def init_config():
     logging.info('Setting up new settings.json')
-    conf={'replacements':{},'variables':['lang=de-CH','papersize=A4','fontsize=10pt','documentclass=scrartcl','mainfont=Linux Libertine O','mainfontoptions=Numbers=OldStyle','mainfontoptions=Ligatures=Discretionary','sansfont=Linux Biolinum','sansfontoptions=Numbers=OldStyle','urlcolor=blue'],'extensions':['yaml_metadata_block'],'options':{'numbered_headings':'True','toc':'True','lof':'False','lot':'False','verbose':'False',},'loglevel':'INFO','files': [],}
+    conf = {'replacements': {}, 'variables': ['lang=de-CH', 'papersize=A4', 'fontsize=10pt', 'documentclass=scrartcl', 'mainfont=Linux Libertine O', 'mainfontoptions=Numbers=OldStyle', 'mainfontoptions=Ligatures=Discretionary', 'sansfont=Linux Biolinum',
+                                              'sansfontoptions=Numbers=OldStyle', 'urlcolor=blue'], 'extensions': ['yaml_metadata_block'], 'options': {'numbered_headings': 'True', 'toc': 'True', 'lof': 'False', 'lot': 'False', 'verbose': 'False', }, 'loglevel': 'INFO', 'files': [], }
     for file in os.listdir():
-        (name,ext)=os.path.splitext(file)
+        (name, ext) = os.path.splitext(file)
         if ext == '.md':
-            conf['files'].append({'in_file':file,'out_file':name+'.pdf','template':'default.latex'})
-    with open('settings.json','w') as f:
-        json.dump(conf,f, indent=4)
+            conf['files'].append(
+                {'in_file': file, 'out_file': name + '.pdf', 'template': 'default.latex'})
+    with open('settings.json', 'w') as f:
+        json.dump(conf, f, indent=4)
     return conf
+
 
 def options(settings):
     ret = []
@@ -143,7 +150,7 @@ def deep_update(source, overrides):
     return source
 
 
-def generate_pdf(in_file,out_file,settings,template='',beamer=False):
+def generate_pdf(in_file, out_file, settings, template='', beamer=False):
     cmd = ['pandoc {}'.format(in_file)]
     cmd.append('-o {}'.format(out_file))
     if beamer:
@@ -162,7 +169,7 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
     for extension in settings['extensions']:
         logging.debug('Adding extension: {}'.format(extension))
         in_format.append('+{}'.format(extension))
-    pdf_engine=(set_pdf_engine(get_pandoc_vers()))
+    pdf_engine = (set_pdf_engine(get_pandoc_vers()))
     cmd.append('{}=xelatex'.format(pdf_engine))
     cmd.append(''.join(in_format))
     cmd.append(options(settings))
@@ -170,14 +177,14 @@ def generate_pdf(in_file,out_file,settings,template='',beamer=False):
 
 
 def generate_output(in_file, out_file, settings, template=''):
-    path,ext = os.path.splitext(out_file)
+    path, ext = os.path.splitext(out_file)
     logging.info('Generating output...')
-    logging.debug('{} => {}'.format(in_file,out_file))
+    logging.debug('{} => {}'.format(in_file, out_file))
     md = include(in_file)
-    if ext == '.pdf':     
+    if ext == '.pdf':
         with open('tmpfile', 'w') as f:
             f.write(replace_lut(md, settings['replacements']))
-        generate_pdf('tmpfile',out_file,settings,template)
+        generate_pdf('tmpfile', out_file, settings, template)
     if ext == '.md':
         with open('tmpfile', 'w') as f:
             f.write(escape_latex(md))
@@ -189,16 +196,21 @@ def generate_output(in_file, out_file, settings, template=''):
         with open('tmpfile', 'w') as f:
             f.write(replace_lut(md, settings['replacements']))
             f.write(escape_latex(md))
-        cmd = ['pandoc -s --reference-doc {} -o {} {}'.format(template,'tmpfile',in_file)]
+        cmd = [
+            'pandoc -s --reference-doc {} -o {} {}'.format(template, 'tmpfile', in_file)]
         execute_exernal(' '.join(cmd))
-    os.remove('tmpfile')   
+    os.remove('tmpfile')
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run it once to generate a initial settings.json file. Review it afterwards if it suits your use. By default PDFs for every md found in the working directory will be generated")
-    parser.add_argument("-i","--init", help="Writes a new default settings.json. Overwrites any present one",action="store_true")
-    parser.add_argument("-b", "--beamer", help="Generates beamer presentation. Tries to get settings from slides.json",action="store_true")
-    parser.add_argument("-f", "--file", help="Just process a given specific file.")
+    parser = argparse.ArgumentParser(
+        description="Run it once to generate a initial settings.json file. Review it afterwards if it suits your use. By default PDFs for every md found in the working directory will be generated")
+    parser.add_argument(
+        "-i", "--init", help="Writes a new default settings.json. Overwrites any present one", action="store_true")
+    parser.add_argument(
+        "-b", "--beamer", help="Generates beamer presentation. Tries to get settings from slides.json", action="store_true")
+    parser.add_argument(
+        "-f", "--file", help="Just process a given specific file.")
     args = parser.parse_args()
 
     if args.beamer:
@@ -209,8 +221,9 @@ def main():
     logging.setLevel(settings['loglevel'])
     if args.file:
         infile = args.file
-        (name,ext)=os.path.splitext(infile)
-        files = [{'in_file':args.file, 'out_file':name+'.pdf', 'template': 'default.latex'}]
+        (name, ext) = os.path.splitext(infile)
+        files = [{'in_file': args.file, 'out_file': name +
+                  '.pdf', 'template': 'default.latex'}]
     else:
         files = settings['files']
 
@@ -218,16 +231,17 @@ def main():
         init_config()
         quit()
 
-
     for f in files:
         try:
             if args.beamer:
-                generate_pdf(f['in_file'], f['out_file'], settings, f['template'],beamer=True)
+                generate_pdf(f['in_file'], f['out_file'],
+                             settings, f['template'], beamer=True)
             else:
-                generate_output(f['in_file'], f['out_file'], settings, f['template'])
+                generate_output(f['in_file'], f['out_file'],
+                                settings, f['template'])
         except KeyError:
             try:
-                generate_output(f['in_file'], f['out_file'],settings)
+                generate_output(f['in_file'], f['out_file'], settings)
             except Exception as e:
                 logging.critical(e)
 
