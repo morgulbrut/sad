@@ -17,12 +17,12 @@ logging = colorlog.getLogger('-')
 logging.addHandler(handler)
 
 def include(md_file):
-    logging.info('Including...')
     output = []
     with open(md_file) as f:
         try:
             for line in f.readlines():
                 if line.strip().lower().startswith('#include'):
+                    logging.info('Including {}'.format(line.split()[1]))
                     output.append(include(line.split()[1]))
                 else:
                     output.append(line)
