@@ -81,6 +81,10 @@
     {
       "in_file": "documentation.md",
       "out_file": "README.md"
+    },
+    {
+      "in_file": "documentation.md",
+      "out_file": "slides.revealjs"
     }
   ]
 }

@@ -199,6 +199,20 @@ def generate_output(in_file, out_file, settings, template=''):
         cmd = [
             'pandoc -s --reference-doc {} -o {} {}'.format(template, 'tmpfile', in_file)]
         execute_exernal(' '.join(cmd))
+
+    if ext == '.revealjs':
+        if not os.path.isdir('reveal.js'):
+            logging.debug('Try to download reveal.js')
+            try:
+                execute_exernal('git clone https://github.com/hakimel/reveal.js.git')
+            except:
+                logging.warning("Failed getting reveal.js. You should get it yourself")
+
+        with open('tmpfile', 'w') as f:
+            f.write(md)
+        cmd = ['pandoc {}'.format('tmpfile')]
+        cmd.append('-t revealjs -s -o {}.html'.format(os.path.splitext(out_file)[0]))
+        execute_exernal(' '.join(cmd))
     os.remove('tmpfile')
 
 
@@ -213,12 +227,18 @@ def main():
         "-f", "--file", help="Just process a given specific file.")
     args = parser.parse_args()
 
+    if args.init:
+        init_config()
+        quit()
+
+
     if args.beamer:
         settings = (read_json('slides.json'))
     else:
         settings = (read_json('settings.json'))
 
     logging.setLevel(settings['loglevel'])
+
     if args.file:
         infile = args.file
         (name, ext) = os.path.splitext(infile)
@@ -227,9 +247,6 @@ def main():
     else:
         files = settings['files']
 
-    if args.init:
-        init_config()
-        quit()
 
     for f in files:
         try:

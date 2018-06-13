@@ -101,3 +101,7 @@ ENV/
 .mypy_cache/
 
 *.pdf
+
+*.htm
+
+*.html
