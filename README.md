@@ -1,10 +1,17 @@
 # Idea
 
-Wouldn’t it cool to use the power of `\XeLaTeX{}` with the ease of
+Wouldn’t it cool to use the power of XeLaTeX with the ease of
 writing a Markdown file and some json?
 
 Pandoc makes at least the first part. So hacking together some Python to
 take part of the second was just a logical consequence.
+
+# Features
+Output filestypes i really have tested, and also use in my daily life are
+
+ - pdf
+ - revealjs 
+   to generate a reveal.js presentation.
 
 ## Why XeLaTeX?
 
@@ -15,14 +22,14 @@ take part of the second was just a logical consequence.
 
   - Pandoc
   - Python 3.
-  - `\XeLaTeX{}`
+  - XeLaTeX
 
 # How to set Up
 
 ## settings.json
 
 If call sad for the first time from the directory, where the markdown
-file you want to convert is, it will generate a settings.json, you
+file you want to convert is, you should run it with `-i` so it will generate a settings.json, you
 perhaps want to review it, since for example I really like Linux
 Biolinum and Linux Libertine and therefore use it as my default font.
 
@@ -163,3 +170,5 @@ Sets the log level, possible values are
 ### files
 
 Sets input file, outputfile and template(optional).
+
+
